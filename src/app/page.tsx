@@ -38,6 +38,11 @@ export default function HomePage() {
                   {config.missing.map((key) => (
                     <li key={key}>{key}</li>
                   ))}
+                  {config.invalid.map((key) => (
+                    <li key={key}>
+                      {key} は https://...supabase.co 形式で入力してください。
+                    </li>
+                  ))}
                 </ul>
               </div>
             </Panel>
@@ -57,4 +62,3 @@ export default function HomePage() {
     </main>
   );
 }
-
