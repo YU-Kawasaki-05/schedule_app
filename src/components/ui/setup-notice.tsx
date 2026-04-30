@@ -24,7 +24,11 @@ export function SetupNotice() {
             <li key={key}>{key}</li>
           ))}
           {config.invalid.map((key) => (
-            <li key={key}>{key} は https://...supabase.co 形式で入力してください。</li>
+            <li key={key}>
+              {key === "NEXT_PUBLIC_SUPABASE_URL"
+                ? `${key} は https://...supabase.co 形式で入力してください。`
+                : `${key} には Supabase の secret/service_role key を入力してください。`}
+            </li>
           ))}
         </ul>
       </div>
