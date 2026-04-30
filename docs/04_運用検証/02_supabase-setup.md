@@ -5,11 +5,13 @@
 `.env.local` に以下を設定する。
 
 ```bash
-NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+`NEXT_PUBLIC_SUPABASE_URL` は Supabase Dashboard の Project Settings からコピーする Project URL。`https://` から始まるURLをそのまま入れる。
 
 ## migration
 
@@ -20,4 +22,3 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 - Supabase Auth の Email provider を有効にする。
 - 管理者ユーザーを作成する。
 - 本番URL設定後は Site URL と Redirect URLs を更新する。
-

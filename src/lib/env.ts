@@ -5,15 +5,35 @@ const requiredSupabaseKeys = [
 ] as const;
 
 export type SupabaseConfigStatus = {
+  invalid: string[];
   ready: boolean;
   missing: string[];
 };
 
+function isHttpUrl(value: string | undefined): value is string {
+  if (!value) {
+    return false;
+  }
+
+  try {
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function getSupabaseConfigStatus(): SupabaseConfigStatus {
   const missing = requiredSupabaseKeys.filter((key) => !process.env[key]);
+  const invalid =
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    !isHttpUrl(process.env.NEXT_PUBLIC_SUPABASE_URL)
+      ? ["NEXT_PUBLIC_SUPABASE_URL"]
+      : [];
 
   return {
-    ready: missing.length === 0,
+    invalid,
+    ready: missing.length === 0 && invalid.length === 0,
     missing
   };
 }
@@ -26,7 +46,7 @@ export function getSupabasePublicConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  if (!url || !anonKey) {
+  if (!isHttpUrl(url) || !anonKey) {
     return null;
   }
 
@@ -37,10 +57,9 @@ export function getSupabaseAdminConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!url || !serviceRoleKey) {
+  if (!isHttpUrl(url) || !serviceRoleKey) {
     return null;
   }
 
   return { serviceRoleKey, url };
 }
-
