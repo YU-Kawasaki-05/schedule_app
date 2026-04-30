@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+"$(dirname "$0")/pre_commit_require_feature_branch.sh"
+
