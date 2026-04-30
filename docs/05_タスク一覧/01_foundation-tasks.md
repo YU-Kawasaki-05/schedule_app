@@ -9,19 +9,20 @@
 
 ## App Foundation
 
-- [ ] Next.js App Router の基盤を作る。
-- [ ] TypeScript strict 設定を入れる。
-- [ ] Tailwind CSS を導入する。
-- [ ] `DESIGN.md` のトークンをCSS variablesへ反映する。
-- [ ] 共通UIコンポーネントを作る。
-- [ ] `.env.example` を作る。
+- [x] Next.js App Router の基盤を作る。
+- [x] TypeScript strict 設定を入れる。
+- [x] Tailwind CSS を導入する。
+- [x] `DESIGN.md` のトークンをCSS variablesへ反映する。
+- [x] 共通UIコンポーネントを作る。
+- [x] `.env.example` を作る。
+- [x] `.gitignore` を作る。
+- [x] `.githooks` の有効化導線を作る。
 
 ## Tooling
 
-- [ ] pnpm lockfile を作る。
-- [ ] lint script を作る。
-- [ ] typecheck script を作る。
-- [ ] unit test script を作る。
-- [ ] E2E test script を作る。
-- [ ] build script を作る。
-
+- [x] pnpm lockfile を作る。
+- [x] lint script を作る。
+- [x] typecheck script を作る。
+- [x] unit test script を作る。
+- [x] E2E test script を作る。
+- [x] build script を作る。

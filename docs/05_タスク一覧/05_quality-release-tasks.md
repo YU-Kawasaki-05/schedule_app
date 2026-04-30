@@ -2,11 +2,11 @@
 
 ## Automated Checks
 
-- [ ] `pnpm lint` を通す。
-- [ ] `pnpm typecheck` を通す。
-- [ ] `pnpm test` を通す。
-- [ ] `pnpm test:e2e` を通す。
-- [ ] `pnpm build` を通す。
+- [x] `pnpm lint` を通す。
+- [x] `pnpm typecheck` を通す。
+- [x] `pnpm test` を通す。
+- [x] `pnpm test:e2e` を通す。
+- [x] `pnpm build` を通す。
 
 ## Manual Checks
 
@@ -30,4 +30,3 @@
 - [ ] Vercel環境変数を設定する。
 - [ ] Production URL を Supabase Auth settings に反映する。
 - [ ] 本番で主要フローを確認する。
-
