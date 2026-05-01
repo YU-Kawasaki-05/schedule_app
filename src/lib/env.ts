@@ -23,6 +23,28 @@ function isHttpUrl(value: string | undefined): value is string {
   }
 }
 
+function hasWildcard(value: string | undefined) {
+  return Boolean(value?.includes("*"));
+}
+
+export function normalizePublicAppUrl(value: string | undefined) {
+  if (!value) {
+    return "http://localhost:3000";
+  }
+
+  try {
+    const url = new URL(value);
+
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return "http://localhost:3000";
+    }
+
+    return url.origin;
+  } catch {
+    return "http://localhost:3000";
+  }
+}
+
 function getJwtRole(value: string) {
   if (!value.startsWith("eyJ")) {
     return null;
@@ -66,6 +88,11 @@ export function getSupabaseConfigStatus(): SupabaseConfigStatus {
     !isHttpUrl(process.env.NEXT_PUBLIC_SUPABASE_URL)
       ? ["NEXT_PUBLIC_SUPABASE_URL"]
       : []),
+    ...(process.env.NEXT_PUBLIC_APP_URL &&
+    (!isHttpUrl(process.env.NEXT_PUBLIC_APP_URL) ||
+      hasWildcard(process.env.NEXT_PUBLIC_APP_URL))
+      ? ["NEXT_PUBLIC_APP_URL"]
+      : []),
     ...(process.env.SUPABASE_SERVICE_ROLE_KEY &&
     !isPrivilegedSupabaseKey(process.env.SUPABASE_SERVICE_ROLE_KEY)
       ? ["SUPABASE_SERVICE_ROLE_KEY"]
@@ -80,7 +107,7 @@ export function getSupabaseConfigStatus(): SupabaseConfigStatus {
 }
 
 export function getPublicAppUrl() {
-  return process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  return normalizePublicAppUrl(process.env.NEXT_PUBLIC_APP_URL);
 }
 
 export function getSupabasePublicConfig() {

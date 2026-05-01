@@ -13,6 +13,14 @@ NEXT_PUBLIC_APP_URL=https://<your-vercel-domain>
 
 `SUPABASE_SERVICE_ROLE_KEY` に anon/public/publishable key を入れると、ログインできてもイベント作成や公開回答保存が失敗する。Supabase Dashboard の API 設定から、管理権限を持つ `service_role` または `secret` のキーを使う。
 
+`NEXT_PUBLIC_APP_URL` はアプリ自身のURLで、`/**` は付けない。招待URLと回答編集URLの生成に使うため、`https://schedule-app-gray.vercel.app` のように origin だけを設定する。
+
+Supabase Auth の URL Configuration は以下を推奨する。
+
+- Site URL: `https://schedule-app-gray.vercel.app`
+- Redirect URLs: `https://schedule-app-gray.vercel.app/**`
+- ローカル確認をする場合の Redirect URLs: `http://localhost:3000/**`
+
 ## 反映手順
 
 1. Vercel に環境変数を保存する。
