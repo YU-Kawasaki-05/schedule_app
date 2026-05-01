@@ -52,37 +52,65 @@ export function EventForm({
   const [slots, setSlots] = useState<SlotDraft[]>(
     event?.slots.map(slotFromRow) ?? []
   );
+  const [title, setTitle] = useState(event?.title ?? "");
+  const [description, setDescription] = useState(event?.description ?? "");
+  const [responseDeadlineAt, setResponseDeadlineAt] = useState(
+    toDatetimeLocalValue(event?.response_deadline_at)
+  );
+  const [visibility, setVisibility] = useState(
+    event?.visibility ?? "private_result"
+  );
+  const [adminNote, setAdminNote] = useState(event?.admin_note ?? "");
   const [slotDate, setSlotDate] = useState(defaultStartDate());
   const [startTime, setStartTime] = useState("19:00");
   const [endTime, setEndTime] = useState("21:00");
+  const [slotError, setSlotError] = useState<string | null>(null);
+
+  const pendingSlot = useMemo(() => {
+    if (!slotDate || !startTime || !endTime) {
+      return null;
+    }
+
+    const startsAt = toIso(slotDate, startTime);
+    const endsAt = toIso(slotDate, endTime);
+
+    if (new Date(endsAt) <= new Date(startsAt)) {
+      return null;
+    }
+
+    return { endsAt, startsAt } satisfies SlotDraft;
+  }, [endTime, slotDate, startTime]);
 
   const slotsJson = useMemo(
-    () =>
-      JSON.stringify(
-        slots.map((slot, index) => ({
+    () => {
+      const effectiveSlots: SlotDraft[] =
+        slots.length > 0 ? slots : pendingSlot ? [pendingSlot] : [];
+
+      return JSON.stringify(
+        effectiveSlots.map((slot, index) => ({
           endsAt: slot.endsAt,
           id: slot.id,
           label: slot.label,
           sortOrder: index,
           startsAt: slot.startsAt
         }))
-      ),
-    [slots]
+      );
+    },
+    [pendingSlot, slots]
   );
 
   function addSlot() {
-    const startsAt = toIso(slotDate, startTime);
-    const endsAt = toIso(slotDate, endTime);
-
-    if (new Date(endsAt) <= new Date(startsAt)) {
+    if (!pendingSlot) {
+      setSlotError("終了時間は開始時間より後にしてください。");
       return;
     }
 
+    setSlotError(null);
     setSlots((current) => [
       ...current,
       {
-        endsAt,
-        startsAt
+        endsAt: pendingSlot.endsAt,
+        startsAt: pendingSlot.startsAt
       }
     ]);
   }
@@ -109,35 +137,41 @@ export function EventForm({
       <Panel className="space-y-5">
         <Field htmlFor="title" label="タイトル">
           <Input
-            defaultValue={event?.title ?? ""}
             id="title"
             maxLength={80}
             name="title"
+            onChange={(event) => setTitle(event.target.value)}
             required
+            value={title}
           />
         </Field>
         <Field htmlFor="description" label="詳細">
           <Textarea
-            defaultValue={event?.description ?? ""}
             id="description"
             maxLength={2000}
             name="description"
+            onChange={(event) => setDescription(event.target.value)}
+            value={description}
           />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
           <Field htmlFor="responseDeadlineAt" label="締切日時">
             <Input
-              defaultValue={toDatetimeLocalValue(event?.response_deadline_at)}
               id="responseDeadlineAt"
               name="responseDeadlineAt"
+              onChange={(event) => setResponseDeadlineAt(event.target.value)}
               type="datetime-local"
+              value={responseDeadlineAt}
             />
           </Field>
           <Field htmlFor="visibility" label="回答結果の公開">
             <Select
-              defaultValue={event?.visibility ?? "private_result"}
               id="visibility"
               name="visibility"
+              onChange={(event) =>
+                setVisibility(event.target.value as typeof visibility)
+              }
+              value={visibility}
             >
               <option value="private_result">非公開</option>
               <option value="public_result">公開</option>
@@ -146,10 +180,11 @@ export function EventForm({
         </div>
         <Field htmlFor="adminNote" label="管理者メモ">
           <Textarea
-            defaultValue={event?.admin_note ?? ""}
             id="adminNote"
             maxLength={2000}
             name="adminNote"
+            onChange={(event) => setAdminNote(event.target.value)}
+            value={adminNote}
           />
         </Field>
       </Panel>
@@ -191,11 +226,14 @@ export function EventForm({
             追加
           </Button>
         </div>
+        {slotError ? (
+          <p className="text-sm font-medium text-danger">{slotError}</p>
+        ) : null}
 
         <div className="space-y-3">
           {slots.length === 0 ? (
             <p className="rounded-sm border border-border bg-surface-muted px-3 py-4 text-sm text-text-muted">
-              候補日時を1件以上追加してください。
+              現在入力中の日時を候補として保存します。複数候補は追加してください。
             </p>
           ) : (
             slots.map((slot, index) => (
@@ -261,4 +299,3 @@ export function EventForm({
     </form>
   );
 }
-
