@@ -46,7 +46,7 @@ model_verbosity = "low"
 approval_policy = "on-request"
 sandbox_mode = "read-only"
 
-[projects."/home/yukawasaki/develop/Ardors-website"]
+[projects."/home/yukawasaki/develop/schedule_app"]
 trust_level = "trusted"
 
 # Optional MCP examples
